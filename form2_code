@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace crudoperatioinsecond
+{
+    public partial class Form2: Form
+    {
+        int tr, rp = 0;
+        public Form2()
+        {
+            InitializeComponent();
+        }
+        SqlConnection sc = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\hello.mdf;Integrated Security=True");
+        private void stdinsert_Click(object sender, EventArgs e) <!--insert data -->
+        {
+            if(stdinsert.Text=="&insert")
+            {
+                if(stdname.Text!=""&&stdmobile.Text!="")
+                {
+                    string sql="insert into login3 values('"+stdname.Text+"','"+stdmobile.Text+"')";
+                    SqlDataAdapter da = new SqlDataAdapter(sql, sc);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    stdname.Text = stdmobile.Text = string.Empty;
+                    loaddata();
+                }
+                else
+                {
+                    MessageBox.Show("data not inserted");
+                }
+            }
+            else
+            {
+                stdname.Text = stdmobile.Text = string.Empty;
+                stdname.Focus();
+                stdinsert.Text = "&insert";
+                stdupdate.Enabled = false;
+                stdupdate.Enabled = false;
+            }
+        }
+
+        private void stdfirst_Click(object sender, EventArgs e) <!--First Button data-->
+        {
+            rp = 0;
+            Navigate();
+            stdupdate.Enabled = true;
+            stdupdate.Enabled = true;
+            stdinsert.Text = "&insert";
+
+        }
+
+        private void loaddata() <!--Loaddata -->
+        {
+            string sql = "select * from login3";
+            SqlDataAdapter da = new SqlDataAdapter(sql,sc);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            dataGridView1.DataSource = dt;
+            tr = dt.Rows.Count - 1;
+        }
+        private void Navigate() <!--Navigate data-->
+        {
+            if(tr>0)
+            {
+                string sql = "select * from login3";
+                SqlDataAdapter da = new SqlDataAdapter(sql, sc);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                stdname.Text = dt.Rows[rp][1].ToString();
+                stdmobile.Text = dt.Rows[rp][2].ToString();
+            }
+        }
+    }
+}
